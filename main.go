@@ -21,30 +21,34 @@ func Solve(constr [8]uint8) {
 	solve(solution, constr)
 }
 
-func solve(solution []uint8, constr [8]uint8) {
+func solve(solution []uint8, constraints [8]uint8) {
 
 	if len(solution) >= 8 {
 		fmt.Printf("Solution found: %v\n", solution)
 		return
 	}
 
-	nextConstr, potentials := prepareNext(&constr)
+	nextConstr, potentials := prepareNext(&constraints)
 
-	for _, emptyPos := range potentials {
+	for _, pos := range potentials {
+		//copy constraints for next step
 		tryConstr := nextConstr
 
+		//copy current solution for further exploration in next step
 		trySolution := make([]uint8, 0, len(solution)+1)
 		trySolution = append(trySolution, solution...)
-		trySolution = append(trySolution, emptyPos)
+		trySolution = append(trySolution, pos)
 
-		tryConstr[emptyPos] |= CONSTANT
-		if emptyPos > 0 {
-			tryConstr[emptyPos-1] |= DECREASING
+		//try cell 'pos' and prepare next step constraints
+		tryConstr[pos] |= CONSTANT
+		if pos > 0 {
+			tryConstr[pos-1] |= DECREASING
 		}
-		if emptyPos < 7 {
-			tryConstr[emptyPos+1] |= INCREASING
+		if pos < 7 {
+			tryConstr[pos+1] |= INCREASING
 		}
 
+		//try to solve with current position
 		solve(trySolution, tryConstr)
 	}
 
@@ -63,12 +67,15 @@ func prepareNext(currentConstr *[8]uint8) (nextConstr [8]uint8, potentials []uin
 			//If a cell isn't completely empty, translate the constraints to the next step.
 
 			if currentConstr[i]&CONSTANT == CONSTANT {
+				//mark position for prior queen's vertical influence
 				nextConstr[i] |= CONSTANT
 			}
 			if i < 7 && currentConstr[i]&INCREASING == INCREASING {
+				//mark position for prior queen's forward diagonal influence
 				nextConstr[i+1] |= INCREASING
 			}
 			if i > 0 && currentConstr[i]&DECREASING == DECREASING {
+				//mark position for prior queen's backward diagonal influence
 				nextConstr[i-1] |= DECREASING
 			}
 		}
