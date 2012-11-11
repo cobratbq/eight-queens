@@ -12,13 +12,13 @@ const (
 )
 
 func main() {
-	constraints := [8]uint8{UNUSED, UNUSED, UNUSED, UNUSED, UNUSED, UNUSED, UNUSED, UNUSED}
-	Solve(constraints)
+	Solve()
 }
 
-func Solve(constr [8]uint8) {
+func Solve() {
 	solution := make([]uint8, 0)
-	solve(solution, constr)
+	constraints := [8]uint8{UNUSED, UNUSED, UNUSED, UNUSED, UNUSED, UNUSED, UNUSED, UNUSED}
+	solve(solution, constraints)
 }
 
 func solve(solution []uint8, constraints [8]uint8) {
