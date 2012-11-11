@@ -35,10 +35,11 @@ func main() {
 func Solve(size int) {
 	solution := make([]uint8, 0)
 	constraints := make([]uint8, size)
-	solve(size, solution, constraints)
+	solve(solution, constraints)
 }
 
-func solve(size int, solution []uint8, constraints []uint8) {
+func solve(solution []uint8, constraints []uint8) {
+	size := len(constraints)
 
 	if len(solution) >= size {
 		//base case: all queens placed, we're done
@@ -46,7 +47,7 @@ func solve(size int, solution []uint8, constraints []uint8) {
 		return
 	}
 
-	nextConstr, potentials := prepareNext(size, constraints)
+	nextConstr, potentials := prepareNext(constraints)
 
 	//check potential queen positions
 	for _, pos := range potentials {
@@ -70,13 +71,14 @@ func solve(size int, solution []uint8, constraints []uint8) {
 		}
 
 		//try to solve with current position
-		solve(size, trySolution, tryConstr)
+		solve(trySolution, tryConstr)
 	}
 
 	return
 }
 
-func prepareNext(size int, currentConstr []uint8) (nextConstr []uint8, potentials []uint8) {
+func prepareNext(currentConstr []uint8) (nextConstr []uint8, potentials []uint8) {
+	size := len(currentConstr)
 	nextConstr = make([]uint8, size)
 	potentials = make([]uint8, 0)
 
