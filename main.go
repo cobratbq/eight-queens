@@ -24,13 +24,16 @@ func Solve() {
 func solve(solution []uint8, constraints [8]uint8) {
 
 	if len(solution) >= 8 {
+		//base case: all queens placed, we're done
 		fmt.Printf("Solution found: %v\n", solution)
 		return
 	}
 
 	nextConstr, potentials := prepareNext(&constraints)
 
+	//check potential queen positions
 	for _, pos := range potentials {
+
 		//copy constraints for next step
 		tryConstr := nextConstr
 
@@ -58,23 +61,23 @@ func solve(solution []uint8, constraints [8]uint8) {
 func prepareNext(currentConstr *[8]uint8) (nextConstr [8]uint8, potentials []uint8) {
 	potentials = make([]uint8, 0)
 
-	for i := uint8(0); i < 8; i++ {
+	for i, constraint := range currentConstr {
 
-		if currentConstr[i] == UNUSED {
+		if constraint == UNUSED {
 			//If a cell is completely empty, record it as a possible next step.
-			potentials = append(potentials, i)
+			potentials = append(potentials, uint8(i))
 		} else {
 			//If a cell isn't completely empty, translate the constraints to the next step.
 
-			if currentConstr[i]&CONSTANT == CONSTANT {
+			if constraint&CONSTANT == CONSTANT {
 				//mark position for prior queen's vertical influence
 				nextConstr[i] |= CONSTANT
 			}
-			if i < 7 && currentConstr[i]&INCREASING == INCREASING {
+			if i < 7 && constraint&INCREASING == INCREASING {
 				//mark position for prior queen's forward diagonal influence
 				nextConstr[i+1] |= INCREASING
 			}
-			if i > 0 && currentConstr[i]&DECREASING == DECREASING {
+			if i > 0 && constraint&DECREASING == DECREASING {
 				//mark position for prior queen's backward diagonal influence
 				nextConstr[i-1] |= DECREASING
 			}
