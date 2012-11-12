@@ -19,17 +19,38 @@ var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 func main() {
 
+	initialize()
+	defer uninitialize()
+
+	Solve(12)
+}
+
+func cpuProfileFlagEnabled() bool {
+	return cpuProfileFlag() != ""
+}
+
+func cpuProfileFlag() string {
+	return *cpuprofile
+}
+
+func initialize() {
+
 	flag.Parse()
-	if *cpuprofile != "" {
+
+	if cpuProfileFlagEnabled() {
 		f, err := os.Create(*cpuprofile)
 		if err != nil {
 			log.Fatal(err)
 		}
 		pprof.StartCPUProfile(f)
-		defer pprof.StopCPUProfile()
 	}
+}
 
-	Solve(12)
+func uninitialize() {
+
+	if cpuProfileFlagEnabled() {
+		pprof.StopCPUProfile()
+	}
 }
 
 func Solve(size int) {
