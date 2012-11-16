@@ -1,8 +1,6 @@
 package queens
 
-import (
-	"fmt"
-)
+import ()
 
 const (
 	UNUSED     uint8 = 0x0
@@ -11,19 +9,25 @@ const (
 	INCREASING uint8 = 0x4
 )
 
-func Solve(size int) {
+func Solve(size int) []uint8 {
 	solution := make([]uint8, 0)
 	constraints := make([]uint8, size)
-	solve(solution, constraints)
+	return solve(solution, constraints)
 }
 
-func solve(solution []uint8, constraints []uint8) bool {
+// Returns the number of solutions found.
+// func SolveAll(size int) int {
+// 	solution := make([]uint8, 0)
+// 	constraints := make([]uint8, size)
+// 	return solveAll(solution, constraints)
+// }
+
+func solve(solution []uint8, constraints []uint8) []uint8 {
 	size := len(constraints)
 
 	if len(solution) >= size {
 		//base case: all queens placed, we're done
-		fmt.Printf("Solution found: %v\n", solution)
-		return true
+		return solution
 	}
 
 	nextConstr, potentials := prepareNext(constraints)
@@ -50,12 +54,12 @@ func solve(solution []uint8, constraints []uint8) bool {
 		}
 
 		//try to solve with current position
-		if solve(trySolution, tryConstr) {
-			return true
+		if sol := solve(trySolution, tryConstr); sol != nil {
+			return sol
 		}
 	}
 
-	return false
+	return nil
 }
 
 func prepareNext(currentConstr []uint8) (nextConstr []uint8, potentials []uint8) {
