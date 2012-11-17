@@ -33,11 +33,7 @@ func initialize() {
 }
 
 func cpuProfileFlagEnabled() bool {
-	return cpuProfileFlag() != ""
-}
-
-func cpuProfileFlag() string {
-	return *cpuprofile
+	return *cpuprofile != ""
 }
 
 func uninitialize() {
