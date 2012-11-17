@@ -1,6 +1,8 @@
 package queens
 
-import ()
+import (
+	"fmt"
+)
 
 const (
 	UNUSED     uint8 = 0x0
@@ -9,25 +11,40 @@ const (
 	INCREASING uint8 = 0x4
 )
 
-func Solve(size int) []uint8 {
+func Solve(size int) {
 	solution := make([]uint8, 0)
 	constraints := make([]uint8, size)
-	return solve(solution, constraints)
+
+	solutionHandler := func(solution []uint8) bool {
+		fmt.Printf("Solution: %v\n", solution)
+		return true
+	}
+
+	solve(solution, constraints, solutionHandler)
 }
 
 // Returns the number of solutions found.
-// func SolveAll(size int) int {
-// 	solution := make([]uint8, 0)
-// 	constraints := make([]uint8, size)
-// 	return solveAll(solution, constraints)
-// }
+func SolveAll(size int) int {
+	solution := make([]uint8, 0)
+	constraints := make([]uint8, size)
 
-func solve(solution []uint8, constraints []uint8) []uint8 {
+	numberOfSolutions := 0
+	solutionHandler := func(solution []uint8) bool {
+		numberOfSolutions++
+		return false
+	}
+
+	solve(solution, constraints, solutionHandler)
+
+	return numberOfSolutions
+}
+
+func solve(solution []uint8, constraints []uint8, handle func(solution []uint8) bool) bool {
 	size := len(constraints)
 
 	if len(solution) >= size {
 		//base case: all queens placed, we're done
-		return solution
+		return handle(solution)
 	}
 
 	nextConstr, potentials := prepareNext(constraints)
@@ -54,12 +71,12 @@ func solve(solution []uint8, constraints []uint8) []uint8 {
 		}
 
 		//try to solve with current position
-		if sol := solve(trySolution, tryConstr); sol != nil {
-			return sol
+		if finished := solve(trySolution, tryConstr, handle); finished {
+			return true
 		}
 	}
 
-	return nil
+	return false
 }
 
 func prepareNext(currentConstr []uint8) (nextConstr []uint8, potentials []uint8) {

@@ -3,13 +3,12 @@ package main
 import (
 	"./queens"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"runtime/pprof"
 )
 
-var fieldsize = flag.Int("size", 8, "size of board to solve")
+var size = flag.Int("size", 8, "size of board to solve")
 var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 func main() {
@@ -17,10 +16,7 @@ func main() {
 	initialize()
 	defer uninitialize()
 
-	solution := queens.Solve(*fieldsize)
-	if solution != nil {
-		fmt.Printf("Solution found: %v\n", solution)
-	}
+	queens.Solve(*size)
 }
 
 func initialize() {
